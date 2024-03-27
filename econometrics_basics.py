@@ -9,8 +9,9 @@ class Econometrics:
         self.beta1 = self.calculate_beta1()
         self.beta0 = self.calculate_beta0()
         self.y_hat = self.calculate_y_hat()
-        self.sqe = self.calculate_sqe()
-        self.sqt = self.calculate_sqt()
+        self.sse = self.calculate_sse()
+        self.sst = self.calculate_sst()
+        self.ssr = self.calculate_ssr()
 
     def import_table(self):
         return list(zip(self.x, self.y))
@@ -38,14 +39,17 @@ class Econometrics:
     def calculate_y_hat(self):
         return [self.beta0 + self.beta1 * xi for xi in self.x]
 
-    def calculate_sqe(self):
+    def calculate_sse(self):
         return sum((yi - y_hat) ** 2 for yi, y_hat in zip(self.y, self.y_hat))
 
-    def calculate_sqt(self):
+    def calculate_sst(self):
         return sum((yi - self.y_mean) ** 2 for yi in self.y)
 
+    def calculate_ssr(self):
+        return self.sst - self.sse
+
     def r_squared(self):
-        return 1 - (self.sqe / self.sqt)
+        return 1 - (self.sse / self.sst)
 
     def critical_value(self, alpha=0.05):
         df = len(self.x) - 2  # degrees of freedom
@@ -56,11 +60,12 @@ x = [59, 71, 70, 64, 72, 73, 64, 70, 68, 75]
 y = [165, 167, 175, 179, 170, 169, 164, 173, 174, 175]
 
 model = Econometrics(x, y)
-print("Imported table:", model.import_table())
+#print("Imported table:", model.import_table())
 print("Beta0:", model.beta0)
 print("Beta1:", model.beta1)
-print("y^ (predicted y):", model.y_hat)
-print("SQE (Sum of Squared Errors):", model.sqe)
-print("SQT (Total Sum of Squares):", model.sqt)
+#print("y^ (predicted y):", model.y_hat)
+print("SSE (Sum of Squared Errors):", model.sse)
+print("SST (Total Sum of Squares):", model.sst)
+print("SSR (Regression Sum of Squares):", model.ssr)
 print("R² (Coefficient of Determination):", model.r_squared())
 print("Critical value (t-distribution):", model.critical_value())
